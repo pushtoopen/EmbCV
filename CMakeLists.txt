@@ -7,12 +7,13 @@ project (Embedded_CV)
 #add_executable(Embedded_CV ./src/main.c)
 add_subdirectory(src)
 
-# This is where the if statement that would
-# check an input variable to optionally build
-# the blob_detect example
-add_executable(Blob_Detect ./examples/blob_detect_example.c)
-add_library(libjpeg mysqrt.cxx)
-add_subdirectory(examples)
+option(BUILDEXAMPLE "Optional Example building" OFF)
+
+if(BUILDEXAMPLE)
+  add_executable(Blob_Detect ./examples/blob_detect_example.c)
+  add_library(libjpeg mysqrt.cxx)
+  add_subdirectory(examples)
+endif(BUILDEXAMPLE)
 
 
 
