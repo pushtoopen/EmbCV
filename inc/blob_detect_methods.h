@@ -22,7 +22,7 @@ struct blob_struct {
 	uint8_t blobcnt;
 
 };
-
+//may reduce this due to not needing to ID that many blobs and reducing the amount of memory taken by an instance of this.
 struct blob_pos {
 	uint32_t blobposwmax[256];
 	uint32_t blobposwmin[256];

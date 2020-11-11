@@ -1,0 +1,4 @@
+[submodule "examples/helpers/libjpeg"]
+	path = examples/helpers/libjpeg
+	url = git@github.com:LuaDist/libjpeg.git
+	branch = Ubuntu-x86_64
