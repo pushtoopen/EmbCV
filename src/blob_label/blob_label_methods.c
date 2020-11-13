@@ -5,7 +5,7 @@
  *
 */
 
-#include "blob_detect_methods.h"
+#include "blob_label_methods.h"
 
 //declared here as these are not used outside of blob detection.
 uint8_t minpixelval(struct blob_struct *stdvals);

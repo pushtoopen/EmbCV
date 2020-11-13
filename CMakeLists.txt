@@ -1,19 +1,31 @@
 cmake_minimum_required (VERSION 3.8)
-set(CMAKE_CXX_STANDARD 17) #C++ standard 17 requires cmake 3.8 min
-set(CMAKE_CXX_STANDARD_REQUIRED True)
+set(CMAKE_C_STANDARD 17) 
+set(CMAKE_C_STANDARD_REQUIRED True)
+project (Embedded_CV DESCRIPTION "CMAKE FOR EMBCV EXAMPLES" LANGUAGES C)
 
-project (Embedded_CV)
+#used in all examples
+add_subdirectory(${Embedded_CV_SOURCE_DIR}/src/base/)
 
-#add_executable(Embedded_CV ./src/main.c)
-add_subdirectory(src)
+#build options
+option(BUILD_BLOB_EXAMPLE "Optional Blob_Label example build" OFF)
 
-option(BUILDEXAMPLE "Optional Example building" OFF)
 
-if(BUILDEXAMPLE)
-  add_executable(Blob_Detect ./examples/blob_detect_example.c)
-  add_library(libjpeg mysqrt.cxx)
-  add_subdirectory(examples)
-endif(BUILDEXAMPLE)
+
+
+
+#runs based on build options
+if(BUILD_BLOB_EXAMPLE)
+	#add_subdirectory tells where other CMakeLists.txt files are
+  add_subdirectory(${Embedded_CV_SOURCE_DIR}/src/blob_label/)
+  add_subdirectory(${Embedded_CV_SOURCE_DIR}/examples/helpers/print_to_csv/)
+  add_subdirectory(${Embedded_CV_SOURCE_DIR}/examples/helpers/libjpeg/)
+  add_subdirectory(${Embedded_CV_SOURCE_DIR}/examples/blob_label/)
+  add_executable(Blob_Label ${Embedded_CV_SOURCE_DIR}/examples/blob_label/blob_detect_example.c)
+  install(TARGETS Blob_Label DESTINATION bin)
+endif(BUILD_BLOB_EXAMPLE)
+
+
+
 
 
 
