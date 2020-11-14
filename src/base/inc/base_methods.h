@@ -12,9 +12,9 @@
 #include <stdlib.h>
 #include <stdint.h>
 #include <string.h>
+#include <math.h>
 #define MAX(a,b) ((a) > (b) ? a : b)
 #define MIN(a,b) ((a) < (b) ? a : b)
-#define greylevel 256 // this means that the values range from  0 to 255 for the image thats being binarized.
 
 typedef struct img_buf img_buf;
 //RGB or greyscale only no JPEG

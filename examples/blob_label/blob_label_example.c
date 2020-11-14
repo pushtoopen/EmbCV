@@ -21,6 +21,7 @@
 //pre-declaring the jpeg reader method
 int read_JPEG_file (char * filename);
 
+//main is required for GCC "hosted" environments, different for different embedded platforms
 int main() {
 	img_buf imgin;
 

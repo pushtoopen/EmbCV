@@ -81,7 +81,8 @@ uint32_t calcarrayidx(uint32_t x_pos, uint32_t y_pos, uint32_t max_x)
 */
 uint8_t threshold_image(img_buf buf){
 
-	uint8_t greylevel = 256;
+	uint16_t GREYLEVEL = 256; // this means that the values range from  0 to 255 for the image thats being binarized.
+
 
 	if(buf.c > 1)
 	{
@@ -90,23 +91,23 @@ uint8_t threshold_image(img_buf buf){
 	}
 
 	float threshold = 0;
-	double pd[greylevel];
-	double w[greylevel];
-	double mu[greylevel];
+	double pd[GREYLEVEL];
+	double w[GREYLEVEL];
+	double mu[GREYLEVEL];
 	double sigma_max = 0;
-	uint32_t histogram[greylevel];
-	double sigma[greylevel];
+	uint32_t histogram[GREYLEVEL];
+	double sigma[GREYLEVEL];
 
 	uint32_t i = 0;
 
-	for (i = 0; i < greylevel; i++)
+	for (i = 0; i < GREYLEVEL; i++)
 	{
 		histogram[i] = 0;
 	}
 	for (i = 0; i < buf.h*buf.w; ++i) {
 		histogram[(unsigned char)(255. * buf.data[i])]++;
 	}
-	for (i = 0; i < greylevel; i++) {
+	for (i = 0; i < GREYLEVEL; i++) {
 		pd[i] = (double)histogram[i] / (buf.w*buf.h);
 	}
 
@@ -114,14 +115,14 @@ uint8_t threshold_image(img_buf buf){
 
 	mu[0] = 0;
 
-	for (i = 1; i < greylevel; i++) {
+	for (i = 1; i < GREYLEVEL; i++) {
 		w[i] = w[i - 1] + pd[i];
 		mu[i] = mu[i - 1] + i * pd[i];
 	}
 
-	for (i = 0; i < greylevel - 1; i++) {
+	for (i = 0; i < GREYLEVEL - 1; i++) {
 		if (w[i] != 0.0 && w[i] != 1.0)
-			sigma[i] = pow(mu[greylevel - 1] * w[i] - mu[i], 2) /
+			sigma[i] = pow(mu[GREYLEVEL - 1] * w[i] - mu[i], 2) /
 			(w[i] * (1.0 - w[i]));
 		else
 			sigma[i] = 0.0;

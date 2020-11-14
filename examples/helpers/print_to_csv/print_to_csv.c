@@ -12,10 +12,11 @@
 void print_greyscale_to_csv(img_buf imgIn)
 {
 
-	out_file = fopen("picout.csv","w");
+	FILE *out_file = fopen("picout.csv","w");
 
 	uint32_t x = 0;
 	uint32_t y = 0;
+	uint32_t l = 0;
 
 	for(y=0; y < imgIn.h; y++)
 	{
