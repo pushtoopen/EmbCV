@@ -8,7 +8,7 @@
 #ifndef INC_BLOB_DETECT_METHODS_H_
 #define INC_BLOB_DETECT_METHODS_H_
 
-#include "base_methods.h"
+#include "../../base/inc/base_methods.h"
 
 
 

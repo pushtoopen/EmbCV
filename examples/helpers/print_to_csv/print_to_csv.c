@@ -8,6 +8,9 @@
 // picture values arranged the same way the picture itself is
 // this only works in an environment that supports fopen & fprintf
 
+/** Example code that prints the picture to csv format for ease of viewing
+* think of the output as a large viewable matrix in excel or MATLAB
+*/
 
 void print_greyscale_to_csv(img_buf imgIn)
 {

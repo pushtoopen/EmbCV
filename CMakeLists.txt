@@ -20,7 +20,7 @@ if(BUILD_BLOB_EXAMPLE)
   add_subdirectory(${Embedded_CV_SOURCE_DIR}/examples/helpers/print_to_csv/)
   add_subdirectory(${Embedded_CV_SOURCE_DIR}/examples/helpers/libjpeg/)
   add_subdirectory(${Embedded_CV_SOURCE_DIR}/examples/blob_label/)
-  add_executable(Blob_Label ${Embedded_CV_SOURCE_DIR}/examples/blob_label/blob_detect_example.c)
+  add_executable(Blob_Label ${Embedded_CV_SOURCE_DIR}/examples/blob_label/blob_label_example.c)
   install(TARGETS Blob_Label DESTINATION bin)
 endif(BUILD_BLOB_EXAMPLE)
 
