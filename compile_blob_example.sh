@@ -9,8 +9,16 @@ eval $command
 
 cd ../examples/helpers/libjpeg/
 printf "\nConfiguring libjpeg\n\n"
-./configure CFLAGS='-O2' --disable-shared
+#./configure CFLAGS='-O2' --disable-shared 
+./configure --prefix="$PWD/build"
 
-printf "\nRunning MAKE\n\n"
+make
+#make -n install
+make install
+export LD_LIBRARY_PATH="$PWD/build/lib/${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}"
+
+
+printf "\nRunning MAKE in the build directory\n\n"
 cd ../../../build/
 make
+

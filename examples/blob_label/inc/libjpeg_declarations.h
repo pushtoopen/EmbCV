@@ -8,20 +8,32 @@
 #ifndef EXAMPLES_BLOB_LABEL_INC_LIBJPEG_DECLARATIONS_H_
 #define EXAMPLES_BLOB_LABEL_INC_LIBJPEG_DECLARATIONS_H_
 
-//start includes required for libjpeg only
-#include <stdio.h>
-#include <sys/types.h>
-#include <setjmp.h>
-#include "../../helpers/libjpeg/jpeglib.h"
-//end includes required for libjpeg only
 
-// start of declarations needed for libjpeg only
-extern JSAMPLE * image_buffer;	/* Points to large array of R,G,B-order data */
-extern int image_height;	/* Number of rows in image */
-extern int image_width;		/* Number of columns in image */
+#include <stdio.h>
+#include <stdint.h>
+#include <setjmp.h>
+#include "../../helpers/libjpeg/build/include/jpeglib.h"
+
+struct ImageInfo
+{
+	uint32_t nWidth;
+	uint32_t nHeight;
+	uint8_t nNumComponent;
+	uint8_t* pData;
+}m_pImageInfo;
+
+
+
+struct ErrorManager
+{
+	jpeg_error_mgr defaultErrorManager;
+	jmp_buf jumpBuffer;
+};
 
 //pre-declaring the jpeg reader method
 int read_JPEG_file (char * filename);
+static void ErrorExit(j_common_ptr cinfo);
+static void OutputMessage(j_common_ptr cinfo);
 
 struct my_error_mgr {
   struct jpeg_error_mgr pub;	/* "public" fields */
@@ -31,145 +43,53 @@ struct my_error_mgr {
 
 typedef struct my_error_mgr * my_error_ptr;
 
-METHODDEF(void)
-my_error_exit (j_common_ptr cinfo)
-{
-  /* cinfo->err really points to a my_error_mgr struct, so coerce pointer */
-  my_error_ptr myerr = (my_error_ptr) cinfo->err;
-
-  /* Always display the message. */
-  /* We could postpone this until after returning, if we chose. */
-  (*cinfo->err->output_message) (cinfo);
-
-  /* Return control to the setjmp point */
-  longjmp(myerr->setjmp_buffer, 1);
-}
-
 //JPEG to RGB example taken from libjpeg
 GLOBAL(int)
 read_JPEG_file (char * filename)
 {
-  /* This struct contains the JPEG decompression parameters and pointers to
-   * working space (which is allocated as needed by the JPEG library).
-   */
-  struct jpeg_decompress_struct cinfo;
-  /* We use our private extension JPEG error handler.
-   * Note that this struct must live as long as the main JPEG parameter
-   * struct, to avoid dangling-pointer problems.
-   */
-  struct my_error_mgr jerr;
-  /* More stuff */
-  FILE * infile;		/* source file */
-  JSAMPARRAY buffer;		/* Output row buffer */
-  int row_stride;		/* physical row width in output buffer */
+	jpeg_decompress_struct cinfo;
+	ErrorManager errorManager;
 
-  /* In this example we want to open the input file before doing anything else,
-   * so that the setjmp() error recovery below can assume the file is open.
-   * VERY IMPORTANT: use "b" option to fopen() if you are on a machine that
-   * requires it in order to read binary files.
-   */
+	FILE* pFile = fopen(filename, "rb");
+	if (!pFile) {return NULL;}
 
-  if ((infile = fopen(filename, "rb")) == NULL) {
-    fprintf(stderr, "can't open %s\n", filename);
-    return 0;
-  }
+	// set our custom error handler
+	cinfo.err = jpeg_std_error(&errorManager.defaultErrorManager);
+	errorManager.defaultErrorManager.error_exit = ErrorExit;
+	errorManager.defaultErrorManager.output_message = OutputMessage;
+	if (setjmp(errorManager.jumpBuffer))
+	{
+		// We jump here on errorz
+		//Cleanup();
+		jpeg_destroy_decompress(&cinfo);
+		fclose(pFile);
+		return NULL;
+	}
 
-  /* Step 1: allocate and initialize JPEG decompression object */
+	jpeg_create_decompress(&cinfo);
+	jpeg_stdio_src(&cinfo, pFile);
+	jpeg_read_header(&cinfo, TRUE);
+	jpeg_start_decompress(&cinfo);
 
-  /* We set up the normal JPEG error routines, then override error_exit. */
-  cinfo.err = jpeg_std_error(&jerr.pub);
-  jerr.pub.error_exit = my_error_exit;
-  /* Establish the setjmp return context for my_error_exit to use. */
-  if (setjmp(jerr.setjmp_buffer)) {
-    /* If we get here, the JPEG code has signaled an error.
-     * We need to clean up the JPEG object, close the input file, and return.
-     */
-    jpeg_destroy_decompress(&cinfo);
-    fclose(infile);
-    return 0;
-  }
-  /* Now we can initialize the JPEG decompression object. */
-  jpeg_create_decompress(&cinfo);
+	m_pImageInfo = new ImageInfo();
+	m_pImageInfo->nWidth = cinfo.image_width;
+	m_pImageInfo->nHeight = cinfo.image_height;
+	m_pImageInfo->nNumComponent = cinfo.num_components;
+	m_pImageInfo->pData = new uint8_t[m_pImageInfo->nWidth*m_pImageInfo->nHeight*m_pImageInfo->nNumComponent];
 
-  /* Step 2: specify data source (eg, a file) */
+	while(cinfo.output_scanline < cinfo.image_height)
+	{
+		uint8_t* p = m_pImageInfo->pData + cinfo.output_scanline*cinfo.image_width*cinfo.num_components;
+		jpeg_read_scanlines(&cinfo, &p, 1);
+	}
 
-  jpeg_stdio_src(&cinfo, infile);
+	jpeg_finish_decompress(&cinfo);
+	jpeg_destroy_decompress(&cinfo);
+	fclose(pFile);
 
-  /* Step 3: read file parameters with jpeg_read_header() */
+	return m_pImageInfo;
 
-  (void) jpeg_read_header(&cinfo, TRUE);
-  /* We can ignore the return value from jpeg_read_header since
-   *   (a) suspension is not possible with the stdio data source, and
-   *   (b) we passed TRUE to reject a tables-only JPEG file as an error.
-   * See libjpeg.txt for more info.
-   */
 
-  /* Step 4: set parameters for decompression */
-
-  /* In this example, we don't need to change any of the defaults set by
-   * jpeg_read_header(), so we do nothing here.
-   */
-
-  /* Step 5: Start decompressor */
-
-  (void) jpeg_start_decompress(&cinfo);
-  /* We can ignore the return value since suspension is not possible
-   * with the stdio data source.
-   */
-
-  /* We may need to do some setup of our own at this point before reading
-   * the data.  After jpeg_start_decompress() we have the correct scaled
-   * output image dimensions available, as well as the output colormap
-   * if we asked for color quantization.
-   * In this example, we need to make an output work buffer of the right size.
-   */
-  /* JSAMPLEs per row in output buffer */
-  row_stride = cinfo.output_width * cinfo.output_components;
-  /* Make a one-row-high sample array that will go away when done with image */
-  buffer = (*cinfo.mem->alloc_sarray)
-		((j_common_ptr) &cinfo, JPOOL_IMAGE, row_stride, 1);
-
-  /* Step 6: while (scan lines remain to be read) */
-  /*           jpeg_read_scanlines(...); */
-
-  /* Here we use the library's state variable cinfo.output_scanline as the
-   * loop counter, so that we don't have to keep track ourselves.
-   */
-  while (cinfo.output_scanline < cinfo.output_height) {
-    /* jpeg_read_scanlines expects an array of pointers to scanlines.
-     * Here the array is only one element long, but you could ask for
-     * more than one scanline at a time if that's more convenient.
-     */
-    (void) jpeg_read_scanlines(&cinfo, buffer, 1);
-    /* Assume put_scanline_someplace wants a pointer and sample count. */
-    put_scanline_someplace(buffer[0], row_stride);
-  }
-
-  /* Step 7: Finish decompression */
-
-  (void) jpeg_finish_decompress(&cinfo);
-  /* We can ignore the return value since suspension is not possible
-   * with the stdio data source.
-   */
-
-  /* Step 8: Release JPEG decompression object */
-
-  /* This is an important step since it will release a good deal of memory. */
-  jpeg_destroy_decompress(&cinfo);
-
-  /* After finish_decompress, we can close the input file.
-   * Here we postpone it until after no more JPEG errors are possible,
-   * so as to simplify the setjmp error logic above.  (Actually, I don't
-   * think that jpeg_destroy can do an error exit, but why assume anything...)
-   */
-  fclose(infile);
-
-  /* At this point you may want to check to see whether any corrupt-data
-   * warnings occurred (test whether jerr.pub.num_warnings is nonzero).
-   */
-
-  /* And we're done! */
-  return 1;
 }
 
 
