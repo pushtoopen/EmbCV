@@ -20,5 +20,5 @@ export LD_LIBRARY_PATH="$PWD/build/lib/${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}"
 
 printf "\nRunning MAKE in the build directory\n\n"
 cd ../../../build/
-make
+make VERBOSE=1
 
