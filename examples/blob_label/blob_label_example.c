@@ -14,20 +14,20 @@
  * 0 indicates no object and 1 indicates an unlabeled object
  *
  * scan pattern checks all pixels around the O
- * labelled X before creating a new blob
+ * labeled X before creating a new blob
  *               XXX
  *               XO
  */
 
 //basic declarations for using libjpeg. no need if you already have the picture in RGB/greyscale
-#include "./inc/libjpeg_declarations.h"
+#include "libjpeg_declarations.h"
 
 //method to print a greyscale picture to csv. allows you to see what the blob detect method is doing.
 //not required for base usage
-#include "../helpers/print_to_csv/inc/print_to_csv.h"
+#include "print_to_csv.h"
 
 // standard methods for blob labelling, required to use label_image_blobs
-#include "../../src/blob_label/inc/blob_label_methods.h"
+#include "blob_label_methods.h"
 
 //main is required for GCC "hosted" environments, different for different embedded platforms
 int main() {
