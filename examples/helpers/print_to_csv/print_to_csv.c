@@ -11,6 +11,7 @@
 /** Example code that prints the picture to csv format for ease of viewing
 * think of the output as a large viewable matrix in excel or MATLAB
 */
+#include "print_to_csv.h"
 
 void print_greyscale_to_csv(img_buf imgIn)
 {

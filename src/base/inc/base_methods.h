@@ -36,4 +36,6 @@ uint32_t calcarrayidx(uint32_t x_pos, uint32_t y_pos, uint32_t max_x);
 uint8_t threshold_image(img_buf buf);
 void binarize_image(img_buf buf,uint8_t threshold);
 
+
+
 #endif /* INC_BASE_METHODS_H_ */

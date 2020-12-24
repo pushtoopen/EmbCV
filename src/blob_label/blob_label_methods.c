@@ -9,15 +9,15 @@
 
 //declared here as these are not used outside of blob detection.
 uint8_t minpixelval(struct blob_struct *stdvals);
-void nonzerovals(struct blob_struct *stdvals);
 uint8_t checkpixel(struct blob_struct* stdvals );
+void nonzerovals(struct blob_struct *stdvals);
 void connect_binary_blobs(img_buf imgin, struct blob_pos* blobpos );
 
 void label_image_blobs(img_buf imgin)
 {
 	uint8_t threshold = threshold_image(imgin);
 	binarize_image(imgin, threshold);
-	connect_binary_blobs(imgin,blobpos);
+	connect_binary_blobs(imgin,&blobpos);
 }
 
 

@@ -12,7 +12,7 @@
 #include <stdlib.h>
 #include <stdint.h>
 #include <string.h>
-#include "../../../../src/base/inc/base_methods.h"
+#include "base_methods.h"
 
 void print_greyscale_to_csv(img_buf imgIn);
 

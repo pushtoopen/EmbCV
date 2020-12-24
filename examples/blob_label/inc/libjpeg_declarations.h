@@ -13,7 +13,7 @@
 #include <stdint.h>
 #include <stdlib.h>
 #include <setjmp.h>
-#include "../../helpers/libjpeg/build/include/jpeglib.h"
+#include "jpeglib.h"
 
 #define FALSE 0
 #define TRUE 1

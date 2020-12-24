@@ -3,8 +3,14 @@ set(CMAKE_C_STANDARD 11)
 set(CMAKE_C_STANDARD_REQUIRED True)
 project (Embedded_CV DESCRIPTION "CMAKE FOR EMBCV EXAMPLES" LANGUAGES C)
 
+set(LIBRARY_OUTPUT_PATH lib/${CMAKE_BUILD_TYPE}) 
+
+
 #used in all examples or usage as a whole
 add_subdirectory(${Embedded_CV_SOURCE_DIR}/src/base/)
+#base_methods.h is used across many other example methods, thus include_directories is used instead of "target_include_directories in a specific library.
+include_directories(${Embedded_CV_SOURCE_DIR}/src/base/inc/)
+
 
 #build options
 option(BUILD_BLOB_EXAMPLE "Optional Blob_Label example build" OFF) #defaults to OFF use cmake -DBUILD_BLOB_EXAMPLE = ON to turn on
@@ -15,17 +21,17 @@ option(BUILD_BLOB_EXAMPLE "Optional Blob_Label example build" OFF) #defaults to 
 
 #runs based on build options
 if(BUILD_BLOB_EXAMPLE)
-	#add_subdirectory tells where other CMakeLists.txt files are
+  #add_subdirectory tells where other CMakeLists.txt files are
   add_subdirectory(${Embedded_CV_SOURCE_DIR}/src/blob_label/)
-  add_subdirectory(${Embedded_CV_SOURCE_DIR}/examples/helpers/print_to_csv/)
   add_subdirectory(${Embedded_CV_SOURCE_DIR}/examples/helpers/libjpeg/)
-  add_subdirectory(${Embedded_CV_SOURCE_DIR}/examples/blob_label/)
-  add_executable(Blob_Label ${Embedded_CV_SOURCE_DIR}/examples/blob_label/blob_label_example.c)
-  #
-  #find_package (jpeg REQUIRED)
-  #target_link_libraries(Embedded_CV jpeg::jpeg)
-  
-  install(TARGETS Blob_Label DESTINATION bin)
+  add_subdirectory(${Embedded_CV_SOURCE_DIR}/examples/helpers/print_to_csv/)
+
+
+
+  #done last because this CMakelists.txt file creates the executable and links the libraries.
+  add_subdirectory(${Embedded_CV_SOURCE_DIR}/examples/blob_label/)    
+
+ 
 endif(BUILD_BLOB_EXAMPLE)
 
 
