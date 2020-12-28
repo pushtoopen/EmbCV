@@ -35,7 +35,7 @@ struct ErrorManager
 };
 
 //pre-declaring the jpeg reader method
-struct ImageInfo read_JPEG_file (char * filename);
+struct ImageInfo read_JPEG_file_Single_Line_Greyscale (char * filename);
 static void ErrorExit(j_common_ptr cinfo);
 static void OutputMessage(j_common_ptr cinfo);
 
@@ -53,13 +53,13 @@ struct ImageInfo m_pImageInfo;
 int row_stride;		/* physical row width in output buffer */
 
 
-//JPEG to RGB example taken from libjpeg
+//JPEG to RGB example taken from libjpeg. Reads whole picture into one single array. No array per row is done in this example.
 
-struct ImageInfo read_JPEG_file (char * filename)
+struct ImageInfo read_JPEG_file_Single_Line_Greyscale (char * filename)
 {
 
 	struct jpeg_decompress_struct cinfo;
-	JSAMPARRAY buffer;		/* Output buffer, this is a char pointer at its base type */
+	JSAMPARRAY buffer;		/* Output buffer, array of pointers to each row read in, we read the whole picture into one row in this example */
 	FILE* pFile = fopen(filename, "rb");
 	if (!pFile) {
 		printf("\n File attempted to be loaded in read_JPEG_file\n\n");
@@ -96,7 +96,7 @@ struct ImageInfo read_JPEG_file (char * filename)
 
 
 	  /* JSAMPLEs per row in output buffer */
-	row_stride = cinfo.output_width * cinfo.output_components;
+	  row_stride = cinfo.output_width * cinfo.output_components;
 	  /* Make a one-row-high sample array that will go away when done with image */
 	  buffer = calloc(cinfo.image_width*cinfo.image_height,cinfo.num_components*sizeof(uint8_t));
 
@@ -105,7 +105,7 @@ struct ImageInfo read_JPEG_file (char * filename)
 	//reads the entire picture into buffer. the 3rd input to read_scanlines is the number of picture rows you'd like to read into the buffer
 	//since were doing the entire picture into one buffer, no while loop is needed.
     jpeg_read_scanlines(&cinfo, buffer, cinfo.image_height);
-    m_pImageInfo.pData = buffer;
+    m_pImageInfo.pData = buffer[0]; //since buffer is an array of pointers to rows, and we only read in one large row, we assign to [0] to change from a pointer of pointers "**", to a pointer "8" .
 	jpeg_finish_decompress(&cinfo);
 	jpeg_destroy_decompress(&cinfo);
 	fclose(pFile);

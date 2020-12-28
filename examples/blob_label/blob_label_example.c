@@ -29,17 +29,29 @@
 // standard methods for blob labelling, required to use label_image_blobs
 #include "blob_label_methods.h"
 
+// included so we can printf debug
+#include <stdio.h>
+
 //main is required for GCC "hosted" environments, different for different embedded platforms
 int main() {
-	img_buf imgin;
+	img_buf imgin; //base struct for an image
+	struct ImageInfo readimage; //same thing as imgin but libjpeg. not needed if imgin is already populated.
 
 	//read in a JPEG and convert to RGB
-	read_JPEG_file("sun_pic.jpg");
-	//convert to greyscale
+	printf("Reading in blobs.jpg");
+	readimage = read_JPEG_file_Single_Line_Greyscale("blobs.jpg");
 
+    imgin.data = readimage.pData;
+    imgin.c = readimage.nNumComponent;
+    imgin.w = readimage.nWidth;
+    imgin.h = readimage.nHeight;
+	//convert to greyscale
 	//thresholds, binarizes, then labels
+	printf("Labelling image and overwriting the input image");
 	label_image_blobs(imgin); 	   // this overwrites the input image
+	printf("Outputting image to a csv file for ease of analysis");
 	print_greyscale_to_csv(imgin); // creates a csv file that shows the image label values in the same structure, requires fileIO capability
+	free(readimage.pData);
 	return 0;
 }
 

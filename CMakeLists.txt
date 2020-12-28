@@ -22,7 +22,9 @@ if(BUILD_BLOB_EXAMPLE)
   add_subdirectory(${Embedded_CV_SOURCE_DIR}/examples/helpers/print_to_csv/)
 
   #done last because this CMakelists.txt file creates the executable and links the libraries.
-  add_subdirectory(${Embedded_CV_SOURCE_DIR}/examples/blob_label/)    
+  add_subdirectory(${Embedded_CV_SOURCE_DIR}/examples/blob_label/)   
+  
+
 
  
 endif(BUILD_BLOB_EXAMPLE)

@@ -16,3 +16,9 @@ target_link_libraries (blob_label_example LINK_PUBLIC jpeg)
 target_link_libraries (blob_label_example LINK_PUBLIC blob_label_methods)
 target_link_libraries (blob_label_example LINK_PUBLIC print_csv)
 
+  add_custom_command(
+        TARGET blob_label_example POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy
+                ${CMAKE_CURRENT_SOURCE_DIR}/blobs.jpg
+                ${CMAKE_CURRENT_BINARY_DIR}/blobs.jpg) 
+
