@@ -4,7 +4,7 @@
 
 cd ./build
 printf "\nRunning CMAKE\n\n"
-command="cmake .. -DBUILD_BLOB_EXAMPLE=ON"
+command="cmake .. -DBUILD_BLOB_EXAMPLE=ON -DBUILD_STATIC=ON -DBUILD_EXECUTABLES=OFF"
 eval $command
 
 cd ../examples/helpers/libjpeg/

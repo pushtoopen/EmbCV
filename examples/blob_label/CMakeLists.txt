@@ -6,6 +6,7 @@ add_executable(blob_label_example blob_label_example.c ${CMAKE_CURRENT_SOURCE_DI
 target_include_directories(blob_label_example PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/inc/)
 target_include_directories(blob_label_example PUBLIC ${Embedded_CV_SOURCE_DIR}/src/base/inc/)
 target_include_directories(blob_label_example PUBLIC ${Embedded_CV_SOURCE_DIR}/src/blob_label/inc/)
+target_include_directories(blob_label_example PUBLIC ${Embedded_CV_SOURCE_DIR}/examples/helpers/libjpeg/)
 #library linking happens after an executable has been created
 #this is the standard library that EmbCV has the methods within
 #any separate library must also be linked along with pointed to
