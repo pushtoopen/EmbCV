@@ -61,8 +61,9 @@ struct ImageInfo read_JPEG_file_Single_Line_Greyscale (char * filename)
 	struct jpeg_decompress_struct cinfo;
 	JSAMPARRAY buffer;		/* Output buffer, array of pointers to each row read in, we read the whole picture into one row in this example */
 	FILE* pFile = fopen(filename, "rb");
+	//system("pwd");
 	if (!pFile) {
-		printf("\n File attempted to be loaded in read_JPEG_file\n\n");
+		printf("\n File attempted to be loaded in read_JPEG_file failed to load\n\n");
 		exit(0);
 	}
 
