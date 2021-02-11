@@ -6,14 +6,16 @@ add_executable(blob_label_example blob_label_example.c ${CMAKE_CURRENT_SOURCE_DI
 target_include_directories(blob_label_example PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/inc/)
 target_include_directories(blob_label_example PUBLIC ${Embedded_CV_SOURCE_DIR}/src/base/inc/)
 target_include_directories(blob_label_example PUBLIC ${Embedded_CV_SOURCE_DIR}/src/blob_label/inc/)
-target_include_directories(blob_label_example PUBLIC ${Embedded_CV_SOURCE_DIR}/examples/helpers/libjpeg/)
+#target_include_directories(blob_label_example PUBLIC ${Embedded_CV_SOURCE_DIR}/examples/helpers/libjpeg/)
+target_include_directories(blob_label_example PUBLIC ${Embedded_CV_SOURCE_DIR}/examples/helpers/libjpeg-turbo/)
 #library linking happens after an executable has been created
 #this is the standard library that EmbCV has the methods within
 #any separate library must also be linked along with pointed to
 target_link_libraries (blob_label_example LINK_PUBLIC base_methods)
 
 #example of addons used (helpers are typically not used in non-linux environments)
-target_link_libraries (blob_label_example LINK_PUBLIC jpeg)
+#target_link_libraries (blob_label_example LINK_PUBLIC jpeg)
+target_link_libraries (blob_label_example LINK_PUBLIC turbojpeg-static)
 target_link_libraries (blob_label_example LINK_PUBLIC blob_label_methods)
 target_link_libraries (blob_label_example LINK_PUBLIC print_csv)
 

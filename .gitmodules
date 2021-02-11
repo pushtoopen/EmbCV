@@ -1,4 +1,3 @@
-[submodule "examples/helpers/libjpeg"]
-	path = examples/helpers/libjpeg
-	url = git@github.com:LuaDist/libjpeg.git
-	branch = Ubuntu-x86_64
+[submodule "examples/helpers/libjpeg-turbo"]
+	path = examples/helpers/libjpeg-turbo
+	url = git@github.com:libjpeg-turbo/libjpeg-turbo.git

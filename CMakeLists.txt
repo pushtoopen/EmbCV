@@ -18,7 +18,8 @@ option(BUILD_BLOB_EXAMPLE "Optional Blob_Label example build" OFF) #defaults to 
 if(BUILD_BLOB_EXAMPLE)
   #add_subdirectory tells where other CMakeLists.txt files are
   add_subdirectory(${Embedded_CV_SOURCE_DIR}/src/blob_label/)
-  add_subdirectory(${Embedded_CV_SOURCE_DIR}/examples/helpers/libjpeg/)
+  #add_subdirectory(${Embedded_CV_SOURCE_DIR}/examples/helpers/libjpeg/)
+  add_subdirectory(${Embedded_CV_SOURCE_DIR}/examples/helpers/libjpeg-turbo/)
   add_subdirectory(${Embedded_CV_SOURCE_DIR}/examples/helpers/print_to_csv/)
 
   #done last because this CMakelists.txt file creates the executable and links the libraries.
