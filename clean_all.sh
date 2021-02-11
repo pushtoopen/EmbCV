@@ -3,7 +3,8 @@
 #[ -d "./build" ] && cd "./build" && [ -e "Makefile" ] && make clean && cd ".." && rm -rf "./build"
 [ -d "./build" ] && rm -rf "./build"
 #clean libjpeg
-cd ./examples/helpers/libjpeg/
+#cd ./examples/helpers/libjpeg/
+cd ./examples/helpers/libjpeg-turbo/
 make clean
 [ -d "./build" ] && rm -rf "./build"
 
