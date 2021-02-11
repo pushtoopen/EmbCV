@@ -5,7 +5,7 @@ This is more of a C only image processing library
 
 Will eventually have many img processing techniques integrated with examples
 
-download and install CMAKE to use examples
+download and install gcc,make,CMAKE and nasm, to use examples
 
 The libraries themselves (inside the src folder) are made to not require any OS level libraries.
 
