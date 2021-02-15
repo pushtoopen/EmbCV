@@ -20,4 +20,6 @@ These libraries will attempt to copy an image as little as possible. This is usu
 
 clone with
 git clone --recurse-submodules
-if using the examples.
+or if already cloned, run:
+git submodule update --init --recursive
+

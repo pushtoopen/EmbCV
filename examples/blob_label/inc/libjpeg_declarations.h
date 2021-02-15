@@ -13,6 +13,7 @@
 #include <stdint.h>
 #include <stdlib.h>
 #include <setjmp.h>
+#include <string.h>
 #include "jpeglib.h"
 
 #ifndef JCS_EXTENSIONS
@@ -108,12 +109,13 @@ struct ImageInfo read_JPEG_file_Single_Line_Greyscale (char * filename)
 	/* JSAMPLEs per row in output buffer */
 	row_stride = cinfo->output_width * cinfo->output_components;
 	/* Make a one-row-high sample array that will go away when done with image */
-	//buffer = calloc(cinfo.image_width*cinfo.image_height,cinfo.num_components*sizeof(uint8_t));  //< --- this is the typical way that a buffer would be allocated
+	m_pImageInfo.pData = calloc(cinfo->image_width*cinfo->image_height*cinfo->num_components,sizeof(uint8_t));  //< --- this is the typical way that a buffer would be allocated
 	buffer = (*cinfo->mem->alloc_sarray)((j_common_ptr)cinfo, JPOOL_IMAGE, row_stride, 1);
 
 
 	//reads the entire picture into buffer. the 3rd input to read_scanlines is the number of picture rows you'd like to read into the buffer
-
+	uint64_t i = 0;
+	uint8_t *currentloc = NULL;
 	  while (cinfo->output_scanline < cinfo->output_height) {
 	    /* jpeg_read_scanlines expects an array of pointers to scanlines.
 	     * Here the array is only one element long, but you could ask for
@@ -121,8 +123,8 @@ struct ImageInfo read_JPEG_file_Single_Line_Greyscale (char * filename)
 	     */
 	    (void)jpeg_read_scanlines(cinfo, buffer, 1); // jpeg_read_scanlines returns the number of lines read
 	    //each scanline is one row of the picture.
-	    //PLACE A FUNCTION TO STORE THE SCANLINES INTO ONE BUFFER HERE.
-	    //*****************************
+	    currentloc = (m_pImageInfo.pData + i*cinfo->image_width);
+	    memcpy(currentloc,buffer,cinfo->image_width);
 	  }
 
 	m_pImageInfo.nWidth = cinfo->image_width;

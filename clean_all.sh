@@ -7,4 +7,4 @@
 cd ./examples/helpers/libjpeg-turbo/
 make clean
 [ -d "./build" ] && rm -rf "./build"
-
+printf "\nClean Script Finished\n\n"

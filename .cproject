@@ -51,7 +51,7 @@
                             							
                             <targetPlatform id="de.marw.cmake.cdt.lsp.targetPlatform.cmake.784166282" name="Any Platform" superClass="de.marw.cmake.cdt.lsp.targetPlatform.cmake"/>
                             							
-                            <builder buildPath="/EmbCV/build/Debug" id="de.marw.cmake.cdt.lsp.builder.portable.181912544" managedBuildOn="true" name="CMake Builder.Debug" superClass="de.marw.cmake.cdt.lsp.builder.portable"/>
+                            <builder arguments="" buildPath="/EmbCV/build/" command="compile_blob_example.sh" id="de.marw.cmake.cdt.lsp.builder.portable.181912544" incrementalBuildTarget="" keepEnvironmentInBuildfile="false" managedBuildOn="false" name="CMake Builder" superClass="de.marw.cmake.cdt.lsp.builder.portable"/>
                             							
                             <tool id="de.marw.cmake.cdt.lsp.toolchain.tool.dummy.1026806833" name="CMake driven Languages Proxy" superClass="de.marw.cmake.cdt.lsp.toolchain.tool.dummy">
                                 								
@@ -84,8 +84,6 @@
                     <def name="BUILD_EXECUTABLES" type="BOOL" val="OFF"/>
                     				
                 </defs>
-                				
-                <undefs/>
                 			
             </storageModule>
             		
@@ -185,7 +183,21 @@
     	
     <storageModule moduleId="org.eclipse.cdt.core.LanguageSettingsProviders"/>
     	
-    <storageModule moduleId="refreshScope"/>
+    <storageModule moduleId="refreshScope" versionNumber="2">
+        		
+        <configuration configurationName="Default">
+            			
+            <resource resourceType="PROJECT" workspacePath="/EmbCV"/>
+            		
+        </configuration>
+        		
+        <configuration configurationName="Debug">
+            			
+            <resource resourceType="PROJECT" workspacePath="/EmbCV"/>
+            		
+        </configuration>
+        	
+    </storageModule>
     	
     <storageModule moduleId="org.eclipse.cdt.make.core.buildtargets"/>
     
