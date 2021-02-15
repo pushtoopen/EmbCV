@@ -6,10 +6,10 @@ add_executable(blob_label_example blob_label_example.c ${CMAKE_CURRENT_SOURCE_DI
 target_include_directories(blob_label_example PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/inc/)
 target_include_directories(blob_label_example PUBLIC ${Embedded_CV_SOURCE_DIR}/src/base/inc/)
 target_include_directories(blob_label_example PUBLIC ${Embedded_CV_SOURCE_DIR}/src/blob_label/inc/)
-#target_include_directories(blob_label_example PUBLIC ${Embedded_CV_SOURCE_DIR}/examples/helpers/libjpeg/)
 target_include_directories(blob_label_example PUBLIC ${Embedded_CV_SOURCE_DIR}/examples/helpers/libjpeg-turbo/)
 
-#this is an unusual include. The build process for libjpeg-turbo generates "jconfig.h" after it's been built so unfortunately we have to include a file inside of the build folder. this is not normal.
+# this is an unusual include. This is the same thing as the last target_include_directories
+# The build process for libjpeg-turbo generates "jconfig.h" after it's been built so unfortunately we have to include a file inside of the build folder. this is not normal.
 target_include_directories(blob_label_example PUBLIC ${CMAKE_CURRENT_BINARY_DIR}/examples/helpers/libjpeg-turbo/)
 
 
@@ -19,7 +19,6 @@ target_include_directories(blob_label_example PUBLIC ${CMAKE_CURRENT_BINARY_DIR}
 target_link_libraries (blob_label_example LINK_PUBLIC base_methods)
 
 #example of addons used (in this example helpers are typically not used in an embedded environment, they are to help with the example)
-#target_link_libraries (blob_label_example LINK_PUBLIC jpeg)
 target_link_libraries (blob_label_example LINK_PUBLIC turbojpeg-static)
 target_link_libraries (blob_label_example LINK_PUBLIC blob_label_methods)
 target_link_libraries (blob_label_example LINK_PUBLIC print_csv)
