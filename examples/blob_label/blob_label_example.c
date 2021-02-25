@@ -39,7 +39,7 @@ int main() {
 
 	//read in a JPEG and convert to RGB
 	printf("Reading in blobs.jpg");
-	readimage = read_JPEG_file_Single_Line_Greyscale("./blobs.jpg");
+	readimage = read_JPEG_file_Single_Line_Greyscale("blobs.jpg");
 
     imgin.data = readimage.pData;
     imgin.c = readimage.nNumComponent;
