@@ -33,7 +33,7 @@ struct ImageInfo
 
 
 //pre-declaring the jpeg reader method
-struct ImageInfo read_JPEG_file_Single_Line_Greyscale (char * filename);
+struct ImageInfo read_JPEG_file_Single_Line_Greyscale (char * filename, struct ImageInfo *m_pImageInfo);
 static void ErrorExit(j_common_ptr cinfo);
 static void OutputMessage(j_common_ptr cinfo);
 
@@ -63,11 +63,11 @@ void my_error_exit(j_common_ptr cinfo)
 
 //JPEG to RGB example taken from libjpeg. Reads whole picture into one single array. No array per row is done in this example.
 
-struct ImageInfo read_JPEG_file_Single_Line_Greyscale (char * filename)
+struct ImageInfo read_JPEG_file_Single_Line_Greyscale (char * filename, struct ImageInfo *m_pImageInfo)
 {
-	struct jpeg_decompress_struct *cinfo;
+	struct jpeg_decompress_struct *cinfo = calloc(1,sizeof(struct jpeg_decompress_struct));
 	struct my_error_mgr jerr;
-	struct ImageInfo m_pImageInfo;
+	//struct ImageInfo m_pImageInfo;
 
 	/* More stuff */
 	FILE *pFile;                 /* source file */
@@ -97,19 +97,14 @@ struct ImageInfo read_JPEG_file_Single_Line_Greyscale (char * filename)
 	jpeg_stdio_src(cinfo, pFile);
 	jpeg_read_header(cinfo, TRUE);
 	//changes to the desired characteristics of the returned image must be done after jpeg_read_header is run. see "http://apodeline.free.fr/DOC/libjpeg/libjpeg-3.html" for more info on options
-	//cinfo.jpeg_color_space = JCS_GRAYSCALE; //sets to greyscale, same as setitng it equal to 1. see J_COLOR_SPACE enum definition for other options.
+	cinfo->out_color_space = JCS_GRAYSCALE; //sets to greyscale, same as setitng it equal to 1. see J_COLOR_SPACE enum definition for other options.
 
 	//run this after all options have been set.
 	jpeg_start_decompress(cinfo);
 
-	//m_pImageInfo = new ImageInfo();
-
-
-
 	/* JSAMPLEs per row in output buffer */
 	row_stride = cinfo->output_width * cinfo->output_components;
-	/* Make a one-row-high sample array that will go away when done with image */
-	m_pImageInfo.pData = calloc(cinfo->image_width*cinfo->image_height*cinfo->num_components,sizeof(uint8_t));  //< --- this is the typical way that a buffer would be allocated
+	m_pImageInfo->pData = calloc(cinfo->image_width*cinfo->image_height*1,sizeof(uint8_t));  //< --- this is the typical way that a buffer would be allocated, but using 1 dimension instead of 3 because we're making this greyscale.
 	buffer = (*cinfo->mem->alloc_sarray)((j_common_ptr)cinfo, JPOOL_IMAGE, row_stride, 1);
 
 
@@ -123,14 +118,15 @@ struct ImageInfo read_JPEG_file_Single_Line_Greyscale (char * filename)
 	     */
 	    (void)jpeg_read_scanlines(cinfo, buffer, 1); // jpeg_read_scanlines returns the number of lines read
 	    //each scanline is one row of the picture.
-	    currentloc = (m_pImageInfo.pData + i*cinfo->image_width);
+	    currentloc = (m_pImageInfo->pData + i*cinfo->image_width);
 	    memcpy(currentloc,buffer,cinfo->image_width);
+	    i++;
 	  }
 
-	m_pImageInfo.nWidth = cinfo->image_width;
-	m_pImageInfo.nHeight = cinfo->image_height;
-	m_pImageInfo.nNumComponent = cinfo->num_components;
-    m_pImageInfo.pData = buffer[0]; //since buffer is an array of pointers to rows, and we only read in one large row, we assign to [0] to change from a pointer of pointers "**", to a pointer "8" .
+	m_pImageInfo->nWidth = cinfo->image_width;
+	m_pImageInfo->nHeight = cinfo->image_height;
+	m_pImageInfo->nNumComponent = 1;// normally this is euqla to cinfo->num_components, but that value is 3 because we read in an RGB, but we're converting to greyscale so it should only be 1.
+    //m_pImageInfo.pData = buffer[0]; //since buffer is an array of pointers to rows, and we only read in one large row, we assign to [0] to change from a pointer of pointers "**", to a pointer "8" .
 
     jpeg_finish_decompress(cinfo);
 	jpeg_destroy_decompress(cinfo);
@@ -138,7 +134,7 @@ struct ImageInfo read_JPEG_file_Single_Line_Greyscale (char * filename)
 	fclose(pFile);
 
 
-	return m_pImageInfo;
+	//return m_pImageInfo;
 
 
 }
