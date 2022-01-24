@@ -1,0 +1,4 @@
+{
+    "_comment1": "This is -D settings to build blob_label_example",
+    "cmake.configureSettings": { "BUILD_BLOB_EXAMPLE": "ON", "BUILD_STATIC": "ON","BUILD_EXECUTABLES": "OFF","CMAKE_BUILD_TYPE": "Debug" }
+}
