@@ -18,18 +18,10 @@ option(BUILD_BLOB_EXAMPLE "Optional Blob_Label example build" OFF) #defaults to 
 if(BUILD_BLOB_EXAMPLE)
   #add_subdirectory tells where other CMakeLists.txt files are
   add_subdirectory(${Embedded_CV_SOURCE_DIR}/src/blob_label/)
-  #add_subdirectory(${Embedded_CV_SOURCE_DIR}/examples/helpers/libjpeg/)
-  #need to install nasm compiler, do a sudo apt install nasm in ubuntu
-  set(CMAKE_ASM_NASM_COMPILER /usr/bin/nasm)
-  add_subdirectory(${Embedded_CV_SOURCE_DIR}/examples/helpers/libjpeg-turbo/)
   add_subdirectory(${Embedded_CV_SOURCE_DIR}/examples/helpers/print_to_csv/)
-
   #done last because this CMakelists.txt file creates the executable and links the libraries.
   add_subdirectory(${Embedded_CV_SOURCE_DIR}/examples/blob_label/)   
-  
-
-
- 
+  #add_executable(blob_label_example blob_label_example.c)
 endif(BUILD_BLOB_EXAMPLE)
 
 # tip: any relative folder path is prepended with " ${CMAKE_CURRENT_SOURCE_DIR}" as "/./" or "." or "pwd"

@@ -22,8 +22,6 @@
  *               XO
  */
 
-//basic declarations for using libjpeg. no need if you already have the picture in RGB/greyscale
-//#include "libjpeg_declarations.h"
 
 //method to print a greyscale picture to csv. allows you to see what the blob detect method is doing.
 //not required for base usage
@@ -49,6 +47,7 @@ int main() {
 	//read in a JPEG and convert to RGB
 
 	// This runs the python script to read in, convert the picture to greyscale, and write to a csv/text file
+	// also catches the python print output which gives us the pixel width, pixel height, and nmber of channels of the picture output to csv.
 	sprintf(shellcmd, "python3 ./openimggreyscale.py %s",filename);
   	fp = popen(shellcmd, "r");
   	if (fp == NULL) {
@@ -70,10 +69,10 @@ int main() {
 	imgin.c = atoi(strArr[2]);
 	uint64_t numvals = imgin.w*imgin.h*imgin.c;
 	imgin.data  = calloc(numvals,sizeof(uint8_t));
+	// Python file complete
 
 
-
-	//This reads in the python output and parses it into an array: coverting the string values to integers.
+	// This reads in the temporary file made by python and parses it into an array: coverting the string values to integers.
 	if ((pFile = fopen("tempcsv.txt", "rb")) == NULL) {
 		printf("\n tempcsv.txt from the python script attempted to be loaded and failed to load\n\n");
 		exit(0);
@@ -92,10 +91,10 @@ int main() {
 	}
 
 	fclose(pFile);
-	remove("tempcsv.txt"); // deltes the temporary output from python
+	remove("tempcsv.txt"); // deletes the temporary output from python
 
 	//thresholds, binarizes, then labels
-	printf("Labelling image and overwriting the input image\r\n");
+	printf("Labeling image and overwriting the input image\r\n");
 	label_image_blobs(imgin); 	   // this overwrites the input image
 	printf("Outputting image to a csv file for ease of analysis\r\n");
 	print_greyscale_to_csv(imgin); // creates a csv file that shows the image label values in the same structure, requires fileIO capability

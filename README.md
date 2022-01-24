@@ -5,7 +5,7 @@ This is more of a C only image processing library
 
 Will eventually have many img processing techniques integrated with examples
 
-download and install gcc,make,CMAKE and nasm, to use examples
+download and install gcc,make,CMAKE, and python with PIL (pillow) library to use examples
 
 The libraries themselves (inside the src folder) are made to not require any OS level libraries.
 
@@ -18,8 +18,6 @@ Regardless of how it's read in, it expects the img data buffer to arranged colum
 these libraries do not account for RGB arrangement (i.e. if it's RGB or GBR or BGR)
 These libraries will attempt to copy an image as little as possible. This is usually not possible for many img processing techniques, but when it is, it overwrites the input image.
 
-clone with
-git clone --recurse-submodules
-or if already cloned, run:
-git submodule update --init --recursive
+Currently only Blob Labelling is available. See examples/blob_label/ for a description
+
 

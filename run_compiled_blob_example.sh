@@ -1,12 +1,12 @@
 #!/bin/bash
  read -n 1 -p "Running Blob Label Example, Would you like to debug using gdb? (y/n):" VAR
-
+cd ./build/examples/blob_label
 if [[ $VAR == 'y' ]]
 then
-    gdb ./build/examples/blob_label/blob_label_example
+    gdb ./blob_label_example
 elif [[ $VAR == 'n' ]]
 then
-    ./build/examples/blob_label/blob_label_example
+    ./blob_label_example
 else
     exit
 fi

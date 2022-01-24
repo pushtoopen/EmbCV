@@ -137,7 +137,6 @@ void connect_binary_blobs(img_buf imgin, struct blob_pos* blobpos )
 		if (imgin.data[i] > 0)
 		{
 			imgin.data[i] = imgin.data[i]/imgin.data[i]; // all populated binary places are set to 1.
-			printf("current modified imgin: %d, i=%d, y=%d, x=%d \n",imgin.data[i],i,calcypos(i, maxcols),calcxpos(i,calcypos(i, maxcols),maxcols));
 		}
 	}
 
