@@ -121,11 +121,14 @@ uint8_t threshold_image(img_buf buf){
 	}
 
 	for (i = 0; i < GREYLEVEL - 1; i++) {
-		if (w[i] != 0.0 && w[i] != 1.0)
+		if (w[i] != 0.0 && w[i] != 1.0){
 			sigma[i] = pow(mu[GREYLEVEL - 1] * w[i] - mu[i], 2) /
 			(w[i] * (1.0 - w[i]));
+		}
 		else
+		{
 			sigma[i] = 0.0;
+		}
 		if (sigma[i] > sigma_max) {
 			sigma_max = sigma[i];
 			threshold = (float)i;
@@ -142,11 +145,10 @@ uint8_t threshold_image(img_buf buf){
 */
 void binarize_image(img_buf buf,uint8_t threshold)
 {
-	for (int i = 0; i < buf.w*buf.h*buf.c; ++i)
-		{
-			if (buf.data[i] > threshold)
-			{
-				buf.data[i] = 255;
+	for (int i = 0; i < buf.w*buf.h*buf.c; ++i)	{
+			if (buf.data[i] > threshold){
+				//buf.data[i] = 255;
+				buf.data[i] = 255;				
 			}
 			else
 			{

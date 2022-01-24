@@ -46,8 +46,8 @@ void nonzerovals(struct blob_struct *stdvals)
 	// all ints should be able to be converted to uint8_t's
 	uint8_t popcnt = 0;
 	uint8_t i = 0;
-	uint8_t interstore[5] = {0}; // 5 is the max amount of checkvals expected
-	for (i = 0; i < stdvals->checklen; i++)
+	uint8_t interstore[5] = {0}; // 5 is the max amount of checkvals expected     XXX
+	for (i = 0; i < stdvals->checklen; i++) //                                    XO
 	{
 		if (stdvals->checkvals[i] != 0)
 		{
@@ -115,6 +115,11 @@ void connect_binary_blobs(img_buf imgin, struct blob_pos* blobpos )
 	uint16_t e = 0; //could be uint8_t but im lazy. Should never go over 255 except to end;
 	uint8_t prevval = 0;
 	int16_t u = 0;
+	uint8_t left = 0;
+	uint8_t upleft = 0;
+	uint8_t up = 0;
+	uint8_t upright = 0;
+	uint8_t curpixel = 0;
 	//setup blob relationship array
 	for (e = 0; e < 256; e++) //sets checkarray to 0:255
 	{
@@ -122,15 +127,18 @@ void connect_binary_blobs(img_buf imgin, struct blob_pos* blobpos )
 	}
 
 
-	//uint32_t totallen = maxcols*maxrows -1; // maxi value
+
 	uint32_t maxi = calcarrayidx(maxcols-1,maxrows-1,maxcols);
 	// (0 = unpop unchecked, 1 = unpop checked, and 2 = pop unlabeled, > 2 = pop labeled) What this is doing is guaranteeing that the input image is binarized.
+	
 	// this runs through everything and ensures its either 0 or 1. it GUARANTEES a binary image.
-	//uint8_t zed = imgin.data[i];
 	for (i = 0; i < maxrows*maxcols -1; i++) //-1 kuz we're indexed at 0
 	{
-		imgin.data[i] *= (uint8_t)255; // all populated binary places are set to 1.
-		imgin.data[i] /= 255;
+		if (imgin.data[i] > 0)
+		{
+			imgin.data[i] = imgin.data[i]/imgin.data[i]; // all populated binary places are set to 1.
+			printf("current modified imgin: %d, i=%d, y=%d, x=%d \n",imgin.data[i],i,calcypos(i, maxcols),calcxpos(i,calcypos(i, maxcols),maxcols));
+		}
 	}
 
 
@@ -138,47 +146,47 @@ void connect_binary_blobs(img_buf imgin, struct blob_pos* blobpos )
 	// begin checking/modifying pixels
 	//remember, this assumes imgin is binarized.
 
-	// top-left
+	// top-left pixel
 	stdvals.curval = imgin.data[0];
-	//zed = imgin.data[0];
+	
 	if (stdvals.curval == 1)
 	{
-		stdvals.checklen = 1;
+		stdvals.checklen = 1; //checking one pixel to see if it's populated, creates a new blob if it is
 		stdvals.checkvals = realloc(stdvals.checkvals, 1*sizeof(uint8_t));
 		stdvals.checkvals[0] = 0;
 		imgin.data[0] = checkpixel(&stdvals);
 	}
-	// top-right
+	// top-right pixel
 	stdvals.curval = imgin.data[maxcols-1];
 	if (stdvals.curval == 1)
 	{
-		stdvals.checklen = 1;
+		stdvals.checklen = 1; //checking one pixel to see if it's populated, creates a new blob if it is
 		stdvals.checkvals = realloc(stdvals.checkvals, 1*sizeof(uint8_t));
 		stdvals.checkvals[0] = 0;
 		imgin.data[maxcols-1] = checkpixel(&stdvals);
 	}
 
-	// bot-left
+	// bot-left pixel
 	stdvals.curval = imgin.data[calcarrayidx(0,maxrows-1,maxcols)];
 	if (stdvals.curval == 1)
 	{
-		stdvals.checklen = 1;
+		stdvals.checklen = 1; //checking one pixel to see if it's populated, creates a new blob if it is
 		stdvals.checkvals = realloc(stdvals.checkvals, 1*sizeof(uint8_t));
 		stdvals.checkvals[0] = 0;
 		imgin.data[calcarrayidx(0,maxrows-1,maxcols)] = checkpixel(&stdvals);
 	}
 
-	// bot-right
+	// bot-right pixel
 	stdvals.curval = imgin.data[calcarrayidx(maxcols-1,maxrows-1,maxcols)];// x & y are 0 index based
 	if (stdvals.curval == 1)
 	{
-		stdvals.checklen = 1;
+		stdvals.checklen = 1; //checking one pixel to see if it's populated, creates a new blob if it is
 		stdvals.checkvals = realloc(stdvals.checkvals, 1*sizeof(uint8_t));
 		stdvals.checkvals[0] = 0;
 		imgin.data[calcarrayidx(maxcols-1,maxrows-1,maxcols)] = checkpixel(&stdvals);
 	}
 
-	//top row
+	//top row - Checks pixels to the left only, starts at 2nd pixel in the picture from the top left going right
 	y = 0;
 	for(x = 1; x < maxcols; x++ )
 	{
@@ -200,14 +208,14 @@ void connect_binary_blobs(img_buf imgin, struct blob_pos* blobpos )
 		else if (stdvals.curval == 1)
 		{
 			stdvals.checklen = 1;
-			uint8_t left = imgin.data[calcarrayidx(x-1,y,maxcols)];
+			left = imgin.data[calcarrayidx(x-1,y,maxcols)];
 			stdvals.checkvals = realloc(stdvals.checkvals,stdvals.checklen*sizeof(uint8_t));
 			stdvals.checkvals[0] = left;
 			imgin.data[i] = checkpixel(&stdvals);
 		}
 	}
 
-	//left col
+	//left col - Checks pixels above and to the right only, starts at 1st pixel in 2nd row of picture going down from the top
 	x = 0;
 	for(y = 1; y < maxrows; y++ )
 	{
@@ -229,15 +237,15 @@ void connect_binary_blobs(img_buf imgin, struct blob_pos* blobpos )
 		else if (stdvals.curval == 1)
 		{
 			stdvals.checklen = 2;
-			uint8_t up = imgin.data[calcarrayidx(x,y-1,maxcols)];
-			uint8_t upright = imgin.data[calcarrayidx(x+1,y-1,maxcols)];
+			up = imgin.data[calcarrayidx(x,y-1,maxcols)];
+			upright = imgin.data[calcarrayidx(x+1,y-1,maxcols)];
 			stdvals.checkvals = realloc(stdvals.checkvals,stdvals.checklen*sizeof(uint8_t));
 			stdvals.checkvals[0] = up; stdvals.checkvals[1] = upright;
 			imgin.data[i] = checkpixel(&stdvals);
 		}
 	}
 
-	//right col
+	//right col - Checks above, to the upleft, and left only, starts at last pixel on the 2nd row going down from the top 
 	x = (maxcols-1);
 	for(y = 1; y < maxrows; y++ )
 	{
@@ -260,9 +268,9 @@ void connect_binary_blobs(img_buf imgin, struct blob_pos* blobpos )
 		else if (stdvals.curval == 1)
 		{
 			stdvals.checklen = 3;
-			uint8_t up = imgin.data[calcarrayidx(x,y-1,maxcols)];
-			uint8_t left = imgin.data[calcarrayidx(x-1,y,maxcols)];
-			uint8_t upleft = imgin.data[calcarrayidx(x-1,y-1,maxcols)];
+			up = imgin.data[calcarrayidx(x,y-1,maxcols)];
+			left = imgin.data[calcarrayidx(x-1,y,maxcols)];
+			upleft = imgin.data[calcarrayidx(x-1,y-1,maxcols)];
 			stdvals.checkvals = realloc(stdvals.checkvals,stdvals.checklen*sizeof(uint8_t));
 			stdvals.checkvals[0] = up; stdvals.checkvals[1] = left; stdvals.checkvals[2] = upleft;
 			imgin.data[i] = checkpixel(&stdvals);
@@ -270,7 +278,7 @@ void connect_binary_blobs(img_buf imgin, struct blob_pos* blobpos )
 	}
 
 
-	//middle (not top row, right column, or left column)
+	//middle (not top row, right column, or left column) - Checks above, to the upleft, left,and upright only, starts at 2nd pixel 2nd row going right and down from the top left
 	for(y = 1; y < maxrows; y++)
 	{
 		for(x = 1; x < maxcols - 1; x++) //
@@ -299,13 +307,14 @@ void connect_binary_blobs(img_buf imgin, struct blob_pos* blobpos )
 			// found new blob. begin processing
 			else if (stdvals.curval == 1)
 			{
-				uint8_t left = imgin.data[calcarrayidx(x-1,y,maxcols)];
-				uint8_t upleft = imgin.data[calcarrayidx(x-1,y-1,maxcols)];
-				uint8_t up = imgin.data[calcarrayidx(x,y-1,maxcols)];
-				uint8_t upright = imgin.data[calcarrayidx(x+1,y-1,maxcols)];
+				left = imgin.data[calcarrayidx(x-1,y,maxcols)];
+				upleft = imgin.data[calcarrayidx(x-1,y-1,maxcols)];
+				up = imgin.data[calcarrayidx(x,y-1,maxcols)];
+				upright = imgin.data[calcarrayidx(x+1,y-1,maxcols)];
 				stdvals.checkvals = realloc(stdvals.checkvals,stdvals.checklen*sizeof(uint8_t));
 				stdvals.checkvals[0] = left; stdvals.checkvals[1] = upleft; stdvals.checkvals[2] = up; stdvals.checkvals[3] = upright;
-				imgin.data[i] = checkpixel(&stdvals);
+				curpixel = checkpixel(&stdvals);
+				imgin.data[i] = curpixel;
 			}
 
 		}
@@ -315,6 +324,8 @@ void connect_binary_blobs(img_buf imgin, struct blob_pos* blobpos )
 
 	//shore up blob relationship array
 	// this finds all the blobs that are the same and puts them back together
+	
+	// TODO:Use the "maxblob" counter to find and clean up blobs to the smallest unused label. - you could interrupt processing to do this cleanup routine mid if the blob count reaches max.
 
 	for(u = 255; u > 0; u--)
 	{
