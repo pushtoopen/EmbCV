@@ -6,7 +6,7 @@ This method thresholds the image using the OTSU method, then binarizes the image
 This method checks all corners for blobs, then top row, left column, then right column. 
 Then it scans through the entire picture looking to ID blobs and will label pixels then it IDs any surrounding pixels as currently part of a blob.
 Finally it scans through the picture one more time and checks for missing gaps in blob IDs and calculates the centroids of each blob and stores it in the "blobpos" struct.
-This is essentially a two-pass algorithm thats effectively a bredth-first search.
+This is essentially a two-pass algorithm thats effectively a breadth-first search.
 This struct can then be referenced elswhere for post-processing.
 
 This method was made to reduce or eliminate copying of the input image to save RAM. With that in mind, if an image is desired to be kept
